@@ -1,0 +1,119 @@
+#!/usr/bin/env node
+'use strict';
+
+// cub entry point (owned jointly):
+//  - publish / init / login / whoami are handled here (publish-flow owner).
+//  - install / add / remove / run delegate to the core agent's dist/cli.js
+//    when it exists (built from src/*.ts). If dist isn't built yet, we
+//    print a clear pointer instead of crashing.
+// This file is CommonJS to match package.json ("type": "commonjs").
+
+const { spawnSync } = require('child_process');
+
+const VERSION = require('../package.json').version;
+
+const HELP = `cub ${VERSION} - fast npm/Bun-compatible package installer
+
+Usage:
+  cub <command> [options]
+
+Core (dist/cli.js, core agent):
+  install [pkg...]       install deps (or given specs)
+  add <pkg...>           add dep(s) + install
+  remove <pkg...>        remove dep(s)
+  run <script> [-- args] run a package.json script
+
+Publish flow:
+  publish [--dry-run] [--tag <tag>] [--access <public|restricted>] [--bump <patch|minor|major|x.y.z>]
+                         pack + publish via npm registry auth (~/.npmrc)
+  init [dir] [--yes]     scaffold a publishable package
+  login                  npm login passthrough
+  whoami                 npm whoami passthrough
+
+Options:
+  -h, --help             show this help
+  -V, --version          show version
+
+Examples:
+  cub install
+  cub publish --dry-run
+  cub publish --bump patch
+  cub init my-pkg --yes
+`;
+
+function isPublishCmd(cmd) {
+  return cmd === 'publish' || cmd === 'init' || cmd === 'login' || cmd === 'whoami';
+}
+
+async function delegateToCore(argv, cwd) {
+  let core;
+  try {
+    // dist/ is ESM (built from TS); dynamic import works from CJS.
+    core = await import('../dist/cli.js');
+  } catch (err) {
+    if (err && (err.code === 'ERR_MODULE_NOT_FOUND' || /Cannot find module/.test(err.message))) {
+      console.error('cub: core installer not built yet (dist/cli.js missing).');
+      console.error('cub: build it with tsc, or use `cub publish` / `cub init` / `cub whoami`.');
+      process.exit(2);
+    }
+    throw err;
+  }
+  await core.main(argv, cwd);
+}
+
+function npmPassthrough(args) {
+  const r = spawnSync('npm', args, { stdio: 'inherit' });
+  process.exit(r.status === null ? 1 : r.status);
+}
+
+async function main() {
+  const argv = process.argv.slice(2);
+  const cmd = argv[0];
+
+  if (argv.length === 0 || cmd === '--help' || cmd === '-h' || cmd === 'help') {
+    // `cub help <cmd>` shows subcommand help where we have it.
+    if (cmd === 'help' && argv[1]) {
+      return mainWith(['cub', argv[1], '--help']);
+    }
+    console.log(HELP);
+    return;
+  }
+  if (cmd === '--version' || cmd === '-V') {
+    console.log(VERSION);
+    return;
+  }
+  return mainWith(process.argv);
+}
+
+async function mainWith(fullArgv) {
+  const cmd = fullArgv[2];
+  const rest = fullArgv.slice(3);
+  const cwd = process.cwd();
+
+  switch (cmd) {
+    case 'publish': {
+      const { runPublish } = require('../lib/publish');
+      await runPublish(rest);
+      return;
+    }
+    case 'init': {
+      const { runInit } = require('../lib/init');
+      await runInit(rest);
+      return;
+    }
+    case 'login':
+      npmPassthrough(['login', ...rest]);
+      break;
+    case 'whoami':
+      npmPassthrough(['whoami', ...rest]);
+      break;
+    default:
+      await delegateToCore(fullArgv, cwd);
+  }
+}
+
+// Resolve the entry script path for core's argv parsing (it reads argv[2]).
+main().catch((err) => {
+  console.error(`cub: ${err && err.message ? err.message : err}`);
+  process.exit(1);
+});

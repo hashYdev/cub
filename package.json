@@ -1,0 +1,28 @@
+{
+  "name": "cubpkg",
+  "version": "0.1.0",
+  "description": "Fast npm/Bun-compatible package installer",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "cub": "./bin/cub"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "lib/",
+    "install.sh"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "bun test",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.7.4"
+  }
+}
