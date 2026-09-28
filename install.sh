@@ -93,9 +93,9 @@ meta="$(mktemp)"
 trap 'rm -f "$meta"' EXIT INT TERM
 if ! curl -fsSL "$NPM_META" -o "$meta"; then
   if [ -n "$GH_FALLBACK_REPO" ]; then
-    echo "registry fetch failed, trying GitHub fallback $GH_FALLBACK_REPO" >&2
-    tarball="https://github.com/$GH_FALLBACK_REPO/releases/latest/download/cub-$os-$arch.tar.gz"
-    version="github-latest"
+    echo "registry fetch failed, trying GitHub source tarball $GH_FALLBACK_REPO" >&2
+    tarball="https://codeload.github.com/$GH_FALLBACK_REPO/tar.gz/refs/heads/main"
+    version="git-main"
   else
     echo "error: could not fetch $NPM_META (curl failed)" >&2
     exit 1
@@ -129,8 +129,12 @@ tar -xzf "$pkgfile" -C "$tmpd"
 # npm tarballs extract to ./package/...
 srcdir="$tmpd/package"
 if [ ! -d "$srcdir" ]; then
-  # GitHub-style fallback tarballs may extract to ./cub-*/...
-  srcdir="$(find "$tmpd" -maxdepth 2 -name cub -type f -printf '%h\n' 2>/dev/null | head -n 1)"
+  # Git source tarballs extract to ./<repo>-<ref>/... — take the top-level dir
+  # that contains bin/cub.
+  srcdir=""
+  for d in "$tmpd"/*/; do
+    if [ -f "${d}bin/cub" ]; then srcdir="$d"; break; fi
+  done
   if [ -z "$srcdir" ]; then
     echo "error: could not find cub payload in $tarball" >&2
     exit 1
