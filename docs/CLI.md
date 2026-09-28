@@ -14,9 +14,6 @@ cub install [pkg...]
 - With args: installs the named specs too (e.g. `cub install lodash@^4`).
 - Aliases: `cub i`, `cub add` (when adding — see below).
 
-Status: core installer is being implemented; the current `bin/cub` stub exits
-non-zero for this command until it lands.
-
 ## cub add <pkg...>
 
 Add packages and record them in `package.json`.
@@ -56,9 +53,21 @@ cub init my-pkg --yes
 
 Omit `--yes` for interactive prompts.
 
+## cub audit
+
+Scan every package pinned in `cub-lock.json` against the OSV vulnerability
+database. Threat data is fetched live — nothing to update locally.
+
+```sh
+cub audit
+```
+
+Exit code is `1` when vulnerabilities are found, `0` when clean. CI-safe:
+`cub install && cub audit`.
+
 ## cub login
 
-npm login passthrough; stores the token in `~/.npmrc`.
+Registry login; stores the token in `~/.npmrc`.
 
 ```sh
 cub login
@@ -67,7 +76,7 @@ cub login --registry=https://registry.npmjs.org/
 
 ## cub publish
 
-Pack and publish to the npm registry. See [PUBLISH.md](PUBLISH.md).
+Pack and publish to the package registry. See [PUBLISH.md](PUBLISH.md).
 
 ```sh
 cub publish --dry-run
@@ -77,7 +86,7 @@ cub publish --bump patch
 
 ## cub whoami
 
-Print the authenticated registry username (npm passthrough).
+Print the authenticated registry username.
 
 ```sh
 cub whoami

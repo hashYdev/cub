@@ -15,6 +15,7 @@ Usage:
   cub add <pkg[@range]> [...]    add dep(s) to package.json + install
   cub remove <pkg> [...]         remove dep(s)
   cub run <script> [-- args]     run a package.json script
+  cub audit                      scan locked deps for known vulnerabilities (OSV)
 
 Options:
   --no-dev          skip devDependencies
@@ -154,6 +155,14 @@ async function main(argv, cwd = process.cwd()) {
             const dashdash = argv.indexOf("--");
             const extra = dashdash === -1 ? [] : argv.slice(dashdash + 1);
             await runScript(command, extra, cwd);
+            return;
+        }
+        case "audit": {
+            const { auditLockfile, formatReport } = await import("./audit.js");
+            const { targets, findings } = await auditLockfile(cwd);
+            process.stdout.write(formatReport(targets, findings));
+            if (findings.length > 0)
+                process.exitCode = 1;
             return;
         }
         default:

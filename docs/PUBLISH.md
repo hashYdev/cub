@@ -1,15 +1,15 @@
 # Publishing with Cub
 
-Cub publishing is npm-compatible: same registry, same auth, same tarball format.
-Anything published with `cub publish` installs fine with npm, Bun, or Cub.
+Cub publishing targets any registry-compatible registry: same auth file,
+same tarball format. Anything published with `cub publish` installs fine
+with Bun or Cub.
 
 ## Auth
 
-Cub reads auth from `~/.npmrc`, exactly like npm. Log in once:
+Cub reads auth from `~/.npmrc` (the standard registry auth file). Log in once:
 
 ```sh
 cub login
-# or: npm login
 ```
 
 Verify:
@@ -68,4 +68,4 @@ Tags: `--tag <tag>` sets the dist-tag (default `latest`).
 1. `cub publish --dry-run` — file list looks right.
 2. Version bumped (or `--bump` passed).
 3. `cub whoami` succeeds (auth works).
-4. Publish; verify with `npm view <pkg> version` / `npm view <pkg> dist-tags`.
+4. Publish; verify the version via the registry metadata endpoint.

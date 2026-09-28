@@ -22,6 +22,7 @@ Core (dist/cli.js, core agent):
   add <pkg...>           add dep(s) + install
   remove <pkg...>        remove dep(s)
   run <script> [-- args] run a package.json script
+  audit                      scan locked deps for vulnerabilities (OSV)
 
 Publish flow:
   publish [--dry-run] [--tag <tag>] [--access <public|restricted>] [--bump <patch|minor|major|x.y.z>]

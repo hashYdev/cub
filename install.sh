@@ -1,7 +1,7 @@
 #!/bin/sh
 # cub installer (POSIX sh)
-# Installs the latest `cub` release from the npm registry, with a
-# GitHub release-tarball fallback.
+# Installs the latest `cub` release from the public package registry,
+# with a GitHub source-tarball fallback (no releases needed).
 #
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/hashYdev/cub/main/install.sh | sh
@@ -15,7 +15,6 @@
 set -eu
 
 PKG="${CUB_PKG:-cubpkg}"
-# Package lives at https://www.npmjs.com/package/cubpkg (publisher: woahbutter).
 # Override with CUB_PKG / CUB_REGISTRY for forks or custom registries.
 REGISTRY="${CUB_REGISTRY:-https://registry.npmjs.org}"
 # URL-encode the package name for metadata fetch (@scope%2fname).
@@ -47,7 +46,7 @@ for arg in "$@"; do
   esac
 done
 
-# --- OS / arch detection (informational; npm tarball is platform-independent) ---
+# --- OS / arch detection (informational; tarball is platform-independent) ---
 os="$(uname -s 2>/dev/null || echo unknown)"
 arch="$(uname -m 2>/dev/null || echo unknown)"
 
@@ -87,7 +86,7 @@ fi
 bindir="$prefix/bin"
 mkdir -p "$bindir"
 
-# --- resolve latest tarball URL from npm metadata ---
+# --- resolve latest tarball URL from registry metadata ---
 echo "resolving latest $PKG from $NPM_META ..."
 meta="$(mktemp)"
 trap 'rm -f "$meta"' EXIT INT TERM
@@ -126,7 +125,7 @@ trap 'rm -rf "$tmpd" "$meta"' EXIT INT TERM
 pkgfile="$tmpd/cub.tgz"
 curl -fsSL "$tarball" -o "$pkgfile"
 tar -xzf "$pkgfile" -C "$tmpd"
-# npm tarballs extract to ./package/...
+# Registry tarballs extract to ./package/...
 srcdir="$tmpd/package"
 if [ ! -d "$srcdir" ]; then
   # Git source tarballs extract to ./<repo>-<ref>/... — take the top-level dir

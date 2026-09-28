@@ -1,5 +1,8 @@
 # Install Cub — no accounts, no registry
 
+> Use the `hashYdev/cub` URLs below. The old `bmaka6130-rgb/cub` links are
+> dead (that account is restricted) and return 404.
+
 ## Option 1 — Bun from git (recommended)
 
 ```sh
@@ -12,25 +15,25 @@ Global:
 bun install -g github:hashYdev/cub
 ```
 
-## Option 2 — npm from git
-
-```sh
-npm i -g github:hashYdev/cub
-```
-
-## Option 3 — curl | sh
+## Option 2 — curl | sh
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/hashYdev/cub/main/install.sh | sh
 ```
 
-Installs `cub` to `~/.cub/bin` (or `/usr/local/bin` as root).
+Installs `cub` to `~/.cub/bin` (or `/usr/local/bin` as root). Needs only
+`curl`, `tar`, `mktemp` — no registry account, no releases.
 
-## Option 4 — manual
+## Option 3 — manual (git clone)
 
-1. Download the tarball for your platform from the releases page.
-2. Unpack it and place the `cub` binary somewhere on your `PATH`, e.g. `~/.cub/bin` or `/usr/local/bin`.
-3. `chmod +x cub`.
+```sh
+git clone https://github.com/hashYdev/cub.git
+cd cub
+bun install   # dev deps for building only
+bun run build
+export PATH="$PWD/bin:$PATH"
+cub --version
+```
 
 ## PATH setup
 
@@ -53,10 +56,7 @@ cub --version
 # curl|sh or manual install
 rm -rf ~/.cub
 
-# npm global install
-npm rm -g cubpkg
-
-# bun global install
+# bun global install (package is registered as cubpkg)
 bun rm -g cubpkg
 ```
 
