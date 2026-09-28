@@ -1,29 +1,30 @@
-# Install Cub
+# Install Cub — no accounts, no registry
 
-## Option 1 — npm (works today)
+## Option 1 — Bun from git (recommended)
 
 ```sh
-npm i -g cubpkg
+bun add github:bmaka6130-rgb/cub
 ```
 
-## Option 2 — curl | sh (after first publish)
+Global:
+
+```sh
+bun install -g github:bmaka6130-rgb/cub
+```
+
+## Option 2 — npm from git
+
+```sh
+npm i -g github:bmaka6130-rgb/cub
+```
+
+## Option 3 — curl | sh
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/bmaka6130-rgb/cub/main/install.sh | sh
 ```
 
-This downloads the release tarball, verifies checksum,
-and installs `cub` to `~/.cub/bin`. Local use now:
-
-```sh
-sh /root/cub/install.sh
-```
-
-## Option 3 — Bun
-
-```sh
-bun install -g cubpkg
-```
+Installs `cub` to `~/.cub/bin` (or `/usr/local/bin` as root).
 
 ## Option 4 — manual
 
