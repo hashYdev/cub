@@ -25,7 +25,7 @@ cub install
 Curl installer:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/bmaka6130-rgb/cub/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/hashYdev/cub/main/install.sh | sh
 cub install
 ```
 

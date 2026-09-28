@@ -3,25 +3,25 @@
 ## Option 1 — Bun from git (recommended)
 
 ```sh
-bun add github:bmaka6130-rgb/cub
+bun add github:hashYdev/cub
 ```
 
 Global:
 
 ```sh
-bun install -g github:bmaka6130-rgb/cub
+bun install -g github:hashYdev/cub
 ```
 
 ## Option 2 — npm from git
 
 ```sh
-npm i -g github:bmaka6130-rgb/cub
+npm i -g github:hashYdev/cub
 ```
 
 ## Option 3 — curl | sh
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/bmaka6130-rgb/cub/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/hashYdev/cub/main/install.sh | sh
 ```
 
 Installs `cub` to `~/.cub/bin` (or `/usr/local/bin` as root).

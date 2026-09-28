@@ -4,8 +4,8 @@
 # GitHub release-tarball fallback.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/bmaka6130-rgb/cub/main/install.sh | sh
-#   curl -fsSL https://raw.githubusercontent.com/bmaka6130-rgb/cub/main/install.sh | sh -s -- --prefix "$HOME/.cub" --no-verify
+#   curl -fsSL https://raw.githubusercontent.com/hashYdev/cub/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/hashYdev/cub/main/install.sh | sh -s -- --prefix "$HOME/.cub" --no-verify
 #
 # Options:
 #   --prefix DIR   install root (default: $HOME/.cub, or /usr/local if writable+root)
@@ -28,7 +28,7 @@ case "$PKG" in
 esac
 NPM_META="$REGISTRY/$PKG_ENC/latest"
 # Fallback if the registry metadata fetch fails.
-GH_FALLBACK_REPO="bmaka6130-rgb/cub"
+GH_FALLBACK_REPO="hashYdev/cub"
 
 prefix=""
 verify=1
